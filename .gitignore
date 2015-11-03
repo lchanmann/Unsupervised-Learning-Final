@@ -3,3 +3,4 @@ tmp/
 wav/
 
 *.un~
+.DS_Store

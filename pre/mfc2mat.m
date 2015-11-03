@@ -12,6 +12,6 @@ for i=1:C
     MFCCs{i} = readhtk_lite( ['tmp/mfc/' name] );
     progress(i, C);
 end
-save('MFCCs.mat', 'MFCCs');
+save('../MFCCs.mat', 'MFCCs');
 
 exit;
