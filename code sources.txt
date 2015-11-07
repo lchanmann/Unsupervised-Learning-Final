@@ -1,0 +1,5 @@
+spectral clustering:
+http://www.mathworks.com/matlabcentral/fileexchange/44879-spectral-clustering/content/spcl.m
+
+Dynamic Time Warping:
+http://www.mathworks.com/matlabcentral/fileexchange/43156-dynamic-time-warping--dtw-/content/dynamic_time_warping_v2.1/dtw.m
