@@ -4,7 +4,7 @@ close all;
 
 files = dir('tmp/mfc/*.mfc');
 C = length(files);
-MFCCs = cell(1, C);
+MFCCs = cell(C, 1);
 labels = zeros(C, 3);
 
 fprintf('Start converting mfc files');
