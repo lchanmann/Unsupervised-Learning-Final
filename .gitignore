@@ -5,3 +5,4 @@ wav/
 *.asv
 *.un~
 .DS_Store
+*.m~
