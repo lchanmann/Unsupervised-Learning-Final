@@ -6,12 +6,33 @@ close all;
 load('MFCCs');
 
 % generate distance matrix
-N = 21*4;% length(MFCCs);
+N = 6;% length(MFCCs);
+w = 30;
+p = 1;
 
-tic;
-disp('Computing pairwise distance...');
-D = pdist( MFCCs(1:N), dtw.new );
-Z = linkage(D, 'single');
-c = cluster(Z, 'maxclust', 21)
-dendrogram(Z);
-toc
+% compare pdist and manually computed matrix
+d = pdist( MFCCs(1:N), dtw.new(w, p) );
+D = squareform(d)
+
+K = N*(N+1)/2 - N;
+dk = zeros(1, K);
+k = 1;
+for i=1:N
+    for j=i:N
+        if i ~= j
+            dk(k) = dtw.base(MFCCs{i}, MFCCs{j}, w, p);
+            k = k + 1;
+        end
+    end
+end
+Dk = squareform(dk)
+
+% tic;
+% disp('Computing pairwise distance...');
+% d = pdist( MFCCs(1:N), dtw.new(w, p) );
+% Z = linkage(d, 'weighted');
+% c = cluster(Z, 'maxclust', 21);
+% 
+% figure;
+% dendrogram(Z);
+% toc
