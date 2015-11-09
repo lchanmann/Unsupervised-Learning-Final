@@ -2,5 +2,6 @@ logs/
 tmp/
 wav/
 
+*.asv
 *.un~
 .DS_Store

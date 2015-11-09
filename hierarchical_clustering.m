@@ -1,6 +1,6 @@
 fprintf('Loading MFCCs...\n');
 load('MFCCs');
-samples = floor(rand(1,15)*length(MFCCs));
+samples = floor(rand(1,60)*length(MFCCs));
 window_size  = 30;
 norm = 1; %manhattan
 
