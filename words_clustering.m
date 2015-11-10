@@ -34,7 +34,7 @@ Z = linkage(d, 'weighted');
 c = cluster(Z, 'maxclust', m);
 
 l = N/m;
-C = reshape(C, m, l)
+C = reshape(c, m, l)
 
 figure;
 dendrogram(Z);
