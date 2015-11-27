@@ -2,6 +2,9 @@ clc;
 clear all;
 close all;
 
+% generate Mel-Frequency cepstral coefficients (MFCC)
+% bash -v ./mfcc.sh
+
 files = dir('tmp/mfc/*.mfc');
 C = length(files);
 MFCCs = cell(C, 1);
@@ -19,4 +22,4 @@ for i=1:C
 end
 save('../MFCCs.mat', 'MFCCs', 'labels');
 
-exit;
+display('done!');
