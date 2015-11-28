@@ -17,7 +17,7 @@ for i=1:C
     
     % labels = [speaker gender word]
     l = length(name);
-    labels(i,:) = [ceil(i/21) name(l-12) str2double(name(l - [5 4]))];
+    labels(i,:) = [ceil(i/103) name(l-12) str2double(name(l - [5 4]))];
     progress(i, C);
 end
 save('../MFCCs.mat', 'MFCCs', 'labels');
