@@ -1,6 +1,4 @@
-clc;
-clear;
-close all;
+startup
 
 % load data
 load('MFCCs');
@@ -11,7 +9,7 @@ N = length(MFCCs);
 m = 21;
 
 % DTW parameters
-w = 30;
+w = 50;
 
 K = N*(N+1)/2 - N;
 d = zeros(1, K);
@@ -21,17 +19,16 @@ tic;
 fprintf('Computing pairwise distance...');
 for i=1:N
     for j=i+1:N
-        if i ~= j
-            d(k) = dtw.base(MFCCs{i}, MFCCs{j}, w);
-            k = k + 1;
-        end
+        d(k) = dtw_c(MFCCs{i}, MFCCs{j}, w);
+        k = k + 1;
         progress(k, K);
     end
 end
-fprintf('done!');
+fprintf('done!\n');
 toc
 
-D = vec2sigma(d, N);
+save('d.mat', 'd');
+% D = vec2sigma(d, N);
 
 % Z = linkage(d, 'weighted');
 % c = cluster(Z, 'maxclust', m);

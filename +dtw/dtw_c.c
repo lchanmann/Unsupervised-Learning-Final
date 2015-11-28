@@ -41,20 +41,23 @@ double dtw_c(double *s, double *t, int w, int ns, int nt, int k)
     double d=0;
     int sizediff=ns-nt>0 ? ns-nt : nt-ns;
     double ** D;
+    double ** P;
     int i,j;
     int j1,j2;
-    double cost,temp;
+    double cost,temp,step;
     
     // printf("ns=%d, nt=%d, w=%d, s[0]=%f, t[0]=%f\n",ns,nt,w,s[0],t[0]);
     
     
     if(w!=-1 && w<sizediff) w=sizediff; // adapt window size
     
-    // create D
+    // create D and P
     D=(double **)malloc((ns+1)*sizeof(double *));
+    P=(double **)malloc((ns+1)*sizeof(double *));
     for(i=0;i<ns+1;i++)
     {
         D[i]=(double *)malloc((nt+1)*sizeof(double));
+        P[i]=(double *)malloc((nt+1)*sizeof(double));
     }
     
     // initialization
@@ -63,9 +66,11 @@ double dtw_c(double *s, double *t, int w, int ns, int nt, int k)
         for(j=0;j<nt+1;j++)
         {
             D[i][j]=-1;
+            P[i][j]=-1;
         }
     }
     D[0][0]=0;
+    P[0][0]=0;
     
     // dynamic programming
     for(i=1;i<=ns;i++)
@@ -84,22 +89,32 @@ double dtw_c(double *s, double *t, int w, int ns, int nt, int k)
         {
             cost=vectorDistance(s,t,ns,nt,k,i-1,j-1);
             
-            temp=D[i-1][j];
-            if(D[i][j-1]!=-1) 
+            temp = D[i-1][j-1];
+            step = P[i-1][j-1];
+            if(D[i-1][j] != -1)
             {
-                if(temp==-1 || D[i][j-1]<temp) temp=D[i][j-1];
+                if(temp==-1 || D[i-1][j]<temp)
+                {
+                    temp = D[i-1][j];
+                    step = P[i-1][j];
+                }
             }
-            if(D[i-1][j-1]!=-1) 
+            if(D[i][j-1] != -1)
             {
-                if(temp==-1 || D[i-1][j-1]<temp) temp=D[i-1][j-1];
+                if(temp==-1 || D[i][j-1]<temp)
+                {
+                    temp = D[i][j-1];
+                    step = P[i][j-1];
+                }
             }
             
             D[i][j]=cost+temp;
+            P[i][j] = 1 + step;
         }
     }
     
     
-    d=D[ns][nt];
+    d=D[ns][nt] / P[ns][nt];
     
     /* view matrix D */
     /*
@@ -113,13 +128,15 @@ double dtw_c(double *s, double *t, int w, int ns, int nt, int k)
     }
     */ 
     
-    // free D
+    // free D and P
     for(i=0;i<ns+1;i++)
     {
         free(D[i]);
+        free(P[i]);
     }
     free(D);
-    
+    free(P);
+
     return d;
 }
 
