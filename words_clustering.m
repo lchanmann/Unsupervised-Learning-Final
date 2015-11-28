@@ -3,15 +3,18 @@ startup
 % load data
 load('d.mat');
 
-% numbers of clusters (numbers of words)
+% number of clusters
 m = 103;
-% numbers of speakers
+
+% number of unique words
+w = 103;
+% number of speakers
 s = 10;
 
 Z = linkage(d, 'weighted');
 T = cluster(Z, 'maxclust', m);
 
-T = reshape(T, m, s);
+T = reshape(T, w, s)
 
 % c = cophenet(Z,d)
 % I = inconsistent(Z)
