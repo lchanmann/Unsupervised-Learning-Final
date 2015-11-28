@@ -27,6 +27,12 @@
 
 % dynamic time warping of two signals
 
+% 
+% Contribution
+%   - normalized warping distance
+%   on November 27, 2015
+%   by Chanmann Lim <cl9p8@mail.missouri.edu>
+% 
 function d=base(s,t,w,p)
 % s: signal 1, size is ns*k, row for time, colume for channel 
 % t: signal 2, size is nt*k, row for time, colume for channel 
@@ -53,12 +59,17 @@ w=max(w, abs(ns-nt)); % adapt window size
 D=zeros(ns+1,nt+1)+Inf; % cache matrix
 D(1,1)=0;
 
+P = zeros(ns+1, nt+1) + Inf;
+P(1) = 0;
 %% begin dynamic programming
 for i=1:ns
     for j=max(i-w,1):min(i+w,nt)
-        oost=norm(s(i,:)-t(j,:),p);
-        D(i+1,j+1)=oost+min( [D(i,j+1), D(i+1,j), D(i,j)] );
+        cost=norm(s(i,:)-t(j,:),p);
+        [distance, step] = min( [D(i,j+1), D(i+1,j), D(i,j)] );
+        D(i+1,j+1)=cost+distance;
         
+        Ps = [P(i,j+1), P(i+1,j), P(i,j)];
+        P(i+1, j+1) = 1 + Ps(step);
     end
 end
-d=D(ns+1,nt+1);
+d=D(ns+1,nt+1) / P(ns+1, nt+1);
