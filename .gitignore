@@ -7,3 +7,6 @@ wav/
 .DS_Store
 *.m~
 dtw_c.mexmaci64
+*.*~
+zscore.m
+papers/

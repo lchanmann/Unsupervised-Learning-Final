@@ -21,7 +21,10 @@ wid = [103 1:102];
 fprintf('Start converting mfc files');
 for i=1:C
     name = files(i).name;
-    MFCCs{i} = readhtk_lite( ['tmp/mfc/' name] );
+    mfcc = readhtk_lite( ['tmp/mfc/' name] );
+    % normalized MFCC
+    mfcc(:, 1:13) = zscore(mfcc(:, 1:13));
+    MFCCs{i} = mfcc;
     
     % labels = [speaker gender]
     l = length(name);

@@ -11,10 +11,10 @@ w = 103;
 % number of speakers
 s = 10;
 
-Z = linkage(d, 'weighted');
+Z = linkage(d, 'weighted')
 T = cluster(Z, 'maxclust', m);
 
-T = reshape(T, w, s)
+S = reshape(T, w, s)
 
 % c = cophenet(Z,d)
 % I = inconsistent(Z)
