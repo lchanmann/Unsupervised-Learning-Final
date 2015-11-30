@@ -31,4 +31,4 @@ L_tilde = D_05 * L * D_05;
 Z = Z(:, I);
 
 % compute y
-y = D_05 * Z(:, I(2));
+y = D_05 * Z(:, I(2:3));

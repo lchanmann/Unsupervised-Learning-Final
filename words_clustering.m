@@ -23,7 +23,11 @@ S2 = reshape(T, w, s)
 % I = inconsistent(Z)
 
 %% Spectral clustering
-epsilon = 150;
-sigma2 = 100;
+epsilon = 180;
+sigma2 = 625;
 
 y = spectral(d, epsilon, sigma2)
+% quantize y's components using k-means
+% [I, M, D] = k_means(y, 10);
+% 
+% reshape(I, 103, 10)
