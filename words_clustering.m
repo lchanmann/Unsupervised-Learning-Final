@@ -23,3 +23,7 @@ S2 = reshape(T, w, s)
 % I = inconsistent(Z)
 
 %% Spectral clustering
+epsilon = 150;
+sigma2 = 100;
+
+y = spectral(d, epsilon, sigma2)

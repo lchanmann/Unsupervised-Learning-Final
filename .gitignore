@@ -10,3 +10,5 @@ dtw_c.mexmaci64
 *.*~
 zscore.m
 papers/
+pdist.m
+squareform.m
