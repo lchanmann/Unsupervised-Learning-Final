@@ -17,7 +17,16 @@ figure;
 dendrogram(Z);
 
 T = cluster(Z, 'maxclust', 2);
-S2 = reshape(T, w, s)
+S = reshape(T, w, s)
+
+%% compute normailized mutual information
+Y = [];
+for i=1:s
+    Y = [Y 1:103];
+end
+
+nmi = mutual_information(Y, T', 'normalized');
+fprintf('Normalized mutual information = %0.4f\n', nmi);
 
 % c = cophenet(Z,d)
 % I = inconsistent(Z)
