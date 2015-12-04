@@ -16,19 +16,25 @@ Z = linkage(d, 'weighted');
 figure;
 dendrogram(Z);
 
-T = cluster(Z, 'maxclust', 2);
+T = cluster(Z, 'maxclust', m);
 S = reshape(T, w, s)
 
-%% compute normailized mutual information
+% compute normailized mutual information
 Y = [];
 for i=1:s
     Y = [Y 1:103];
 end
-
 nmi = mutual_information(Y, T', 'normalized');
 fprintf('Normalized mutual information = %0.4f\n', nmi);
 
-% c = cophenet(Z,d)
+%%
+[c, D] = cophenet(Z,d);
+figure;
+plot(d, D, '.');
+correlation = corr(d', D','type','spearman');
+
+display(c);
+display(correlation);
 % I = inconsistent(Z)
 
 %% Spectral clustering
