@@ -8,6 +8,8 @@ load('MFCCs');
 
 % generate distance matrix
 N = length(MFCCs);
+% number of dimensions used
+l = 13;
 
 % DTW window parameter
 w = 50;
@@ -19,8 +21,10 @@ k = 1;
 tic;
 fprintf('Computing pairwise distance...');
 for i=1:N
+    s = MFCCs{i}(1:13);
     for j=i+1:N
-        d(k) = dtw_c(MFCCs{i}, MFCCs{j}, w);
+        t = MFCCs{j}(1:13);
+        d(k) = dtw_c(s, t, w);
         k = k + 1;
         progress(k, K);
     end
@@ -28,4 +32,4 @@ end
 fprintf('done!\n');
 toc
 
-save('d.mat', 'd');
+save('d13.mat', 'd');
