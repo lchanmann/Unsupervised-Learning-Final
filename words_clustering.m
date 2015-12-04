@@ -25,17 +25,11 @@ for i=1:s
     Y = [Y 1:103];
 end
 nmi = mutual_information(Y, T', 'normalized');
-fprintf('Normalized mutual information = %0.4f\n', nmi);
+fprintf('Normalized mutual information = %0.5f\n', nmi);
 
-%%
-[c, D] = cophenet(Z,d);
-figure;
-plot(d, D, '.');
-correlation = corr(d', D','type','spearman');
-
-display(c);
-display(correlation);
-% I = inconsistent(Z)
+% Cophenet correlation coefficients
+[cpcc, Pc] = cophenet(Z, d);
+fprintf('Cophenet correlation coefficients = %0.5f\n%', cpcc);
 
 %% Spectral clustering
 epsilon = 180;
