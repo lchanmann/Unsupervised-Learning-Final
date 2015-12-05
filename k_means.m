@@ -1,21 +1,22 @@
-function [ I, Mu, D ] = k_means( X, k )
+function [ I, Theta, distortion ] = k_means( P, m )
 %KMEANS Performs k-means clustering
 %
 %   I  - cluster assignment
-%   Mu - cluster centroids
-%   D  - total distortions
+%   Theta - cluster centroids
+%   distortion  - total distortion
 %
 
-    [~, l] = size(X);
-    % cluster centroids
-    Mu = rand(l, k);
+    [n, ~] = size(P);
+    N = n - m;
+    % clusters' medoids
+    Theta = randperm(N, m);
     t = 1;
 
     while true
-        I = cluster_assignment(X, Mu);
-        Mu = centroid_update(X, I);
-        D(t) = distortion(X, Mu, I);
-        if t > 1 && D(t) == D(t-1)
+        I = cluster_assignment(P(:, Theta));
+        Theta = centroid_update(P, I);
+        distortion(t) = total_distortion(P, Theta, I);
+        if t > 1 && distortion(t) == distortion(t-1)
             break;
         end
         t = t + 1;
@@ -23,39 +24,41 @@ function [ I, Mu, D ] = k_means( X, k )
 end
 
 %% cluster_assignment in k-mean algorithm
-function [ I ] = cluster_assignment( X, Mu )
+function [ I ] = cluster_assignment( D )
 
-    [~, m] = size(Mu);
-    [N, ~] = size(X);
-    D = zeros(N, m);
-    for i=1:m
-        mu = ones(N, 1) * Mu(:, i)';
-        D(:, i) = sum((X-mu).^2, 2);
-    end
     [~, I] = min(D, [], 2);
 end
 
 %% centroid_update in k-mean algorithm
-function [ Mu ] = centroid_update( X, I )
+function [ Theta ] = centroid_update( P, I )
 
-    [~, l] = size(X);
-    K = unique(I)';
-    Mu = zeros(l, length(K));
+    [N, ~] = size(P);
+    ind = 1:N;
+    c = unique(I)';
+    m = length(c);
+    Theta = zeros(1, m);
     
-    for i=1:length(K)
-        Mu(:,i) = mean(X(I == K(i), :))';
+    for j=1:m
+        % rows assigned to cluster j and their indices
+        n = I==c(j);
+        r = ind(n);
+        % closest point to all points in cluster j
+        [~, k] = min( sum(P(n, n)) );
+        Theta(j) = r(k);
     end
 end
 
 %% distortion - total distortion of the predicted clusters center
-function [ D ] = distortion( X, Mu, I )
+function [ D ] = total_distortion( P, Theta, I )
 
-    [~, m] = size(Mu);
-    [N, l] = size(X);
+    [N, ~] = size(P);
+    c = unique(I)';
+    m = length(c);
     
-    S = zeros(N, l);
-    for i=1:m
-        S(I==i,:) = ones(nnz(I==i), 1) * Mu(:, i)';
+    S = zeros(N, 1);
+    for j=1:m
+        n = I==c(j);
+        S(n) = P(n, Theta(j));
     end
-    D = sum( sum( (X-S).^2 ) );
+    D = sum( S );
 end
