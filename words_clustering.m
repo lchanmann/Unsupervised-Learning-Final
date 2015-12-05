@@ -36,7 +36,7 @@ fprintf('Cophenet correlation coefficients = %0.5f\n%', cpcc);
 %% k-means clustering (medoid-based)
 P = squareform(d);
 
-[T, Theta, distortion] = k_means(P, m);
+[T, Theta, distortion] = k_medoids(P, m);
 Sk = reshape(T, w, s)
 
 % normailized mutual information
@@ -53,7 +53,7 @@ Theta = randperm(N, m);
 % fuzzyfier
 q = 2;
 
-% [Theta, distortion] = fuzzy_c_medoid(P, Theta, q);
+[Theta, distortion] = fuzzy_c_mean(P, Theta, q);
 % I = fcm_cluster_assignment(X, Theta);
 
 %% Spectral clustering

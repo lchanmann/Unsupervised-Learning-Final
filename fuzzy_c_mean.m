@@ -29,10 +29,15 @@ function [ Theta, distortion ] = fuzzy_c_mean( P, Theta, q )
 %             end
 %         end
         t = t + 1;
-        % parameter update
-        C = sum(U.^q .* D);
+%         Theta_t = zeros(1, m);
+%         % parameter update
+%         for j=1:m
+%             
+%         end
         
-        Theta_t = P_tilde{j};
+        [~, Theta_t] = min(U.^q .* D);
+        
+%         Theta_t = P_tilde{j};
 
         % check for termination
         % : if change in Theta is smaller than epsilon

@@ -1,9 +1,9 @@
-function [ I, Theta, distortion ] = k_means( P, m )
-%KMEANS Performs k-means clustering
+function [ I, Theta, J ] = k_medoids( P, m )
+%KMEANS Performs k-medoids PAM clustering
 %
 %   I  - cluster assignment
 %   Theta - cluster centroids
-%   distortion  - total distortion
+%   J  - cost of the objective function
 %
 
     [n, ~] = size(P);
@@ -14,12 +14,17 @@ function [ I, Theta, distortion ] = k_means( P, m )
     t = 1;
 
     while true
-        I = cluster_assignment(P(:, Theta));
-        Theta = centroid_update(P, I);
-        distortion(t) = total_distortion(P, Theta, I);
-        if t > 1 && distortion(t) == distortion(t-1)
+        D = P(:, Theta);
+        U = D == min(D, [], 2)*ones(1, m);
+        
+        % cost of objective function
+        J(t) = cost(D, U);
+        if t > 1 && J(t) >= J(t-1)
             break;
         end
+        
+        I = cluster_assignment(D);
+        Theta = centroid_update(P, I);
         t = t + 1;
     end
 end
@@ -49,17 +54,8 @@ function [ Theta ] = centroid_update( P, I )
     end
 end
 
-%% distortion - total distortion of the predicted clusters center
-function [ D ] = total_distortion( P, Theta, I )
+%% cost - compute cost of medoids set Theta
+function [ C ] = cost( P, U )
 
-    [N, ~] = size(P);
-    c = unique(I)';
-    m = length(c);
-    
-    S = zeros(N, 1);
-    for j=1:m
-        n = I==c(j);
-        S(n) = P(n, Theta(j));
-    end
-    D = sum( S );
+    C = sum( sum(U .* P) );
 end
