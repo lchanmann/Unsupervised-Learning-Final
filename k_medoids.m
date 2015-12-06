@@ -60,25 +60,6 @@ function [ I ] = cluster_assignment( D )
     [~, I] = min(D, [], 2);
 end
 
-% %% centroid_update in k-mean algorithm
-% function [ Theta ] = centroid_update( P, I )
-% 
-%     [N, ~] = size(P);
-%     ind = 1:N;
-%     c = unique(I)';
-%     m = length(c);
-%     Theta = zeros(1, m);
-%     
-%     for j=1:m
-%         % rows assigned to cluster j and their indices
-%         n = I==c(j);
-%         r = ind(n);
-%         % closest point to all points in cluster j
-%         [~, k] = min( sum(P(n, n)) );
-%         Theta(j) = r(k);
-%     end
-% end
-
 %% cost - compute cost of medoids set Theta
 function [ C ] = cost( P, U )
     C = sum( sum(U .* P) );
