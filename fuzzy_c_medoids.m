@@ -22,8 +22,8 @@ function [ Theta, distortion, I ] = fuzzy_c_medoids( P, Theta, q )
 
         D = P(:, Theta);
         U = exp(-n/m*D) ./ (sum(exp(-n/m*D), 2)*ones(1, m));
-% %         U = exp(-D);
-% %         U = 1./(1+D);
+%         U = exp(-D/n/m);
+%         U = 1./(1+D/n/m);
         
         % medoids update
         [~, Theta_t] = min((U'.^q * P)');
@@ -40,5 +40,5 @@ function [ Theta, distortion, I ] = fuzzy_c_medoids( P, Theta, q )
     end
     
     % cluster assignment
-    [~, I] = min(D, [], 2);
+    [~, I] = min(P(:, Theta), [], 2);
 end
