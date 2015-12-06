@@ -1,5 +1,7 @@
 function [ I, Theta, J ] = k_medoids( P, m )
-%KMEANS Performs k-medoids PAM clustering
+%KMEANS Performs k-medoids CLARANS clustering
+%   CLARAN - Clustering Large Application based on RANdomized Search
+%   Ref: https://www.youtube.com/watch?v=OWpRBCrx5-M
 %
 %   I  - cluster assignment
 %   Theta - cluster centroids
@@ -7,10 +9,9 @@ function [ I, Theta, J ] = k_medoids( P, m )
 %
 
     [n, ~] = size(P);
-    N = n - m;
+%     N = n - m;
     % clusters' medoids
-%     Theta = [131,71,813,453,58,222,451,29,773,97,262,648,656,148,302,401,322,624,702,791,631,664,159,828,652,774,200,266,700,769,809,770,567,214,726,873,754,514,283,675,406,695,41,808,394,503,840,593,485,839,377,210,517,12,796,571,881,151,697,586,298,676,307,62,411,221,78,146,452,494,577,113,910,156,510,668,187,2,500,8,416,590,256,836,155,659,658,328,27,63,255,147,218,903,722,495,227,498,309,677,847,119,681];
-    Theta = randperm(N, m);
+    Theta = randperm(n, m);
     t = 1;
 
     while true
@@ -24,8 +25,32 @@ function [ I, Theta, J ] = k_medoids( P, m )
         end
         
         I = cluster_assignment(D);
-        Theta = centroid_update(P, I);
+        Theta = medoid_swap(P, Theta, I, J(t));
         t = t + 1;
+    end
+end
+
+function Theta = medoid_swap( P, Theta, I , J )
+    [n, ~] = size(P);
+    [~, m] = size(Theta);
+    S = randperm(n, randi([1, 0.8*n]));
+    N = length(S);
+    for i=1:N
+        Si = S(i);
+        if ~any(Theta == Si)
+            j = I( Si );
+            Theta_j = Theta(j);
+            Theta(j) = Si;
+            
+            % compute cost
+            D = P(:, Theta);
+            U = D == min(D, [], 2)*ones(1, m);
+            if J > cost(D, U)
+                break;
+            else
+                Theta(j) = Theta_j;
+            end
+        end
     end
 end
 
@@ -35,27 +60,26 @@ function [ I ] = cluster_assignment( D )
     [~, I] = min(D, [], 2);
 end
 
-%% centroid_update in k-mean algorithm
-function [ Theta ] = centroid_update( P, I )
-
-    [N, ~] = size(P);
-    ind = 1:N;
-    c = unique(I)';
-    m = length(c);
-    Theta = zeros(1, m);
-    
-    for j=1:m
-        % rows assigned to cluster j and their indices
-        n = I==c(j);
-        r = ind(n);
-        % closest point to all points in cluster j
-        [~, k] = min( sum(P(n, n)) );
-        Theta(j) = r(k);
-    end
-end
+% %% centroid_update in k-mean algorithm
+% function [ Theta ] = centroid_update( P, I )
+% 
+%     [N, ~] = size(P);
+%     ind = 1:N;
+%     c = unique(I)';
+%     m = length(c);
+%     Theta = zeros(1, m);
+%     
+%     for j=1:m
+%         % rows assigned to cluster j and their indices
+%         n = I==c(j);
+%         r = ind(n);
+%         % closest point to all points in cluster j
+%         [~, k] = min( sum(P(n, n)) );
+%         Theta(j) = r(k);
+%     end
+% end
 
 %% cost - compute cost of medoids set Theta
 function [ C ] = cost( P, U )
-
     C = sum( sum(U .* P) );
 end
