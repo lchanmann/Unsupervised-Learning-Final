@@ -28,6 +28,9 @@ Sh = reshape(T, w, s)
 % compute normailized mutual information
 nmi = mutual_information(Y, T', 'normalized');
 fprintf('Normalized mutual information = %0.5f\n', nmi);
+% naive count accuracy
+acc = evaluate(Y, T');
+fprintf('Naive count accuracy = %0.5f\n', acc);
 
 % Cophenet correlation coefficients
 [cpcc, Pc] = cophenet(Z, d);
@@ -42,6 +45,9 @@ Sk = reshape(T, w, s)
 % normailized mutual information
 nmi = mutual_information(Y, T', 'normalized');
 fprintf('Normalized mutual information = %0.5f\n', nmi);
+% naive count accuracy
+acc = evaluate(Y, T');
+fprintf('Naive count accuracy = %0.5f\n', acc);
 
 % plot medoids distortion
 figure;
@@ -66,6 +72,9 @@ Sf = reshape(T, w, s)
 % normailized mutual information
 nmi = mutual_information(Y, T', 'normalized');
 fprintf('Normalized mutual information = %0.5f\n', nmi);
+% naive count accuracy
+acc = evaluate(Y, T');
+fprintf('Naive count accuracy = %0.5f\n', acc);
 
 figure;
 plot(distortion);
