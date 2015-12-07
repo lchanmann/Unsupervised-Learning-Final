@@ -73,15 +73,15 @@ xlabel('Iteration');
 title(['Fuzzy C-Medoids clustering distortion (NMI = ' num2str(nmi) ')']);
 
 %% Spectral clustering
-epsilon = 180;
-sigma2 = 625;
+epsilon = 19; % choose according to sparseness=10% from spectral.m
+sigma2 = 5; % try from between 1 -> 196
 
 y = spectral(d, epsilon, sigma2, m);
 % normalization
 z = zscore(y);
 % k-means clustering
 [T, distortion] = k_means(z, m);
-Sk = reshape(T, w, s)
+Sk = reshape(T, w, s);
 
 % normailized mutual information
 nmi = mutual_information(Y, T', 'normalized');

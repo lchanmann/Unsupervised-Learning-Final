@@ -11,6 +11,9 @@ P = squareform(d.^2);
 % construct sparse graph G(V,E)
 G = P < epsilon;
 
+% g = G(:);
+% fprintf('Sparseness of G = %0.4f\n', sum( (g==0) ) / length(g));
+
 % compute the strength of edge e_ij
 W = G .* exp(-P/sigma_squared);
 
