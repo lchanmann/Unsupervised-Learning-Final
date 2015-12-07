@@ -1,4 +1,4 @@
-function [ I, Theta, J ] = k_medoids( P, m )
+function [ I, Theta, J, I1 ] = k_medoids( P, m )
 %KMEANS Performs k-medoids CLARANS clustering
 %   CLARAN - Clustering Large Application based on RANdomized Search
 %   Ref: https://www.youtube.com/watch?v=OWpRBCrx5-M
@@ -12,21 +12,24 @@ function [ I, Theta, J ] = k_medoids( P, m )
 %     N = n - m;
     % clusters' medoids
     Theta = randperm(n, m);
-    t = 1;
+    t = 0;
 
     while true
         D = P(:, Theta);
         U = D == min(D, [], 2)*ones(1, m);
         
         % cost of objective function
+        t = t + 1;
         J(t) = cost(D, U);
         if t > 1 && J(t) >= J(t-1)
             break;
         end
         
         I = cluster_assignment(D);
+        if t==1
+            I1 = I;
+        end
         Theta = medoid_swap(P, Theta, I, J(t));
-        t = t + 1;
     end
 end
 

@@ -1,65 +1,67 @@
-function [ I, Theta, distortion ] = k_means( P, m )
+function [ I, D ] = k_means( X, m )
 %KMEANS Performs k-means clustering
 %
 %   I  - cluster assignment
 %   Theta - cluster centroids
-%   distortion  - total distortion
+%   D  - total distortion
 %
 
-    [n, ~] = size(P);
-    N = n - m;
-    % clusters' medoids
-%     Theta = [131,71,813,453,58,222,451,29,773,97,262,648,656,148,302,401,322,624,702,791,631,664,159,828,652,774,200,266,700,769,809,770,567,214,726,873,754,514,283,675,406,695,41,808,394,503,840,593,485,839,377,210,517,12,796,571,881,151,697,586,298,676,307,62,411,221,78,146,452,494,577,113,910,156,510,668,187,2,500,8,416,590,256,836,155,659,658,328,27,63,255,147,218,903,722,495,227,498,309,677,847,119,681];
-    Theta = randperm(N, m);
+    [~, l] = size(X);
+    Theta = rand(l, m);
+    D = [];
     t = 1;
 
     while true
-        I = cluster_assignment(P(:, Theta));
-        Theta = centroid_update(P, I);
-        distortion(t) = total_distortion(P, Theta, I);
-        if t > 1 && distortion(t) == distortion(t-1)
+        I  = cluster_assignment(X, Theta);
+        D(t) = distortion(X, Theta, I);
+        if t > 1 && D(t) >= D(t-1)
             break;
         end
+        Theta = centroid_update(X, I);
         t = t + 1;
     end
 end
 
-%% cluster_assignment in k-mean algorithm
-function [ I ] = cluster_assignment( D )
+function [ I ] = cluster_assignment( X, Theta )
+% cluster_assignment in k-mean algorithm
 
+    [~, m] = size(Theta);
+    [N, ~] = size(X);
+    D = zeros(N, m);
+    for i=1:m
+        mu = ones(N,1) * Theta(:,i)';
+        D(:, i) = sum((X-mu).^2, 2);
+    end
     [~, I] = min(D, [], 2);
 end
 
-%% centroid_update in k-mean algorithm
-function [ Theta ] = centroid_update( P, I )
+function [ Theta ] = centroid_update( X, I )
+% centroid_update in k-mean algorithm
+%       X - dataset
+%       I - clusters assignment
 
-    [N, ~] = size(P);
-    ind = 1:N;
-    c = unique(I)';
-    m = length(c);
-    Theta = zeros(1, m);
+    [~, d] = size(X);
+    C = unique(I)';
+    Theta = zeros(d, length(C));
     
-    for j=1:m
-        % rows assigned to cluster j and their indices
-        n = I==c(j);
-        r = ind(n);
-        % closest point to all points in cluster j
-        [~, k] = min( sum(P(n, n)) );
-        Theta(j) = r(k);
+    for j=1:length(C)
+        Theta(:,j) = mean(X(I==C(j), :), 1)';
     end
 end
 
-%% distortion - total distortion of the predicted clusters center
-function [ D ] = total_distortion( P, Theta, I )
+function [ D ] = distortion( X, Theta, I )
+% distortion - total distortion of the predicted clusters center
+%       X  - dataset
+%       Mu - clusters centroid
+%       I  - clusters assignment
 
-    [N, ~] = size(P);
-    c = unique(I)';
-    m = length(c);
+    [~, m] = size(Theta);
+    [N, l] = size(X);
+    K = unique(I)';
     
-    S = zeros(N, 1);
-    for j=1:m
-        n = I==c(j);
-        S(n) = P(n, Theta(j));
+    S = zeros(N, l);
+    for i=1:length(K)
+        S(I==K(i),:) = ones(nnz(I==K(i)), 1) * Theta(:, i)';
     end
-    D = sum( S );
+    D = sum( sum( (X-S).^2 ) );
 end

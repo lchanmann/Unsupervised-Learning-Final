@@ -1,7 +1,7 @@
 startup
 
 % load data
-load('d.mat');
+load('d13.mat');
 
 % number of unique words
 w = 103;
@@ -76,10 +76,19 @@ title(['Fuzzy C-Medoids clustering distortion (NMI = ' num2str(nmi) ')']);
 epsilon = 180;
 sigma2 = 625;
 
-y = spectral(d, epsilon, sigma2);
+y = spectral(d, epsilon, sigma2, m);
+% normalization
+z = zscore(y);
+% k-means clustering
+[T, distortion] = k_means(z, m);
+Sk = reshape(T, w, s)
 
-% quantize y's components and repeat until the number of desired clusters
-% is reached
-Ss = reshape(y > median(y), w, s)
-fprintf('%d out of %d y''s > median\n', sum(y > median(y)), length(y));
+% normailized mutual information
+nmi = mutual_information(Y, T', 'normalized');
+fprintf('Normalized mutual information = %0.5f\n', nmi);
 
+% plot total distortion
+figure;
+plot(distortion);
+xlabel('Iterations');
+title(['K-means distortion on Eigenmap (NMI = ' num2str(nmi) ')']);

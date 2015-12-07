@@ -9,7 +9,7 @@ function [ Theta, distortion, I ] = fuzzy_c_medoids( P, Theta, q )
     [n, ~] = size(P);
     % the number of data excluding clusters' representatives
 %     N = n - m;
-%     p = 1/(q-1);
+    p = 1/(q-1);
 
     t = 0;
     distortion = [];
@@ -23,7 +23,8 @@ function [ Theta, distortion, I ] = fuzzy_c_medoids( P, Theta, q )
         D = P(:, Theta);
         U = exp(-n/m*D) ./ (sum(exp(-n/m*D), 2)*ones(1, m));
 %         U = exp(-D/n/m);
-%         U = 1./(1+D/n/m);
+%         U = 1./(1+D.^p);
+%         U = D == min(D, [], 2)*ones(1, m);
         
         % medoids update
         [~, Theta_t] = min((U'.^q * P)');

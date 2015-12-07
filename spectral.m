@@ -1,4 +1,4 @@
-function [y, a, Z] = spectral( d, epsilon, sigma_squared )
+function [y, D, W] = spectral( d, epsilon, sigma_squared, m )
 %SPECTRAL Performs spectral clustering using minimum distance (epsilon)
 %   and a Laplacian matrix (using sigma_squared)
 %   to divide the data X into 2 clusters
@@ -19,7 +19,8 @@ D = sum(W);
 D_05 = diag(1./sqrt(D));
 
 % graph Laplacian matrix
-L = diag(D) - W;
+D = diag(D);
+L = D - W;
 % normalized L
 L_tilde = D_05 * L * D_05;
 
@@ -31,4 +32,4 @@ L_tilde = D_05 * L * D_05;
 Z = Z(:, I);
 
 % compute y
-y = D_05 * Z(:, I(2));
+y = D_05 * Z(:, I(end-m+1:end));
