@@ -1,0 +1,1 @@
+Label words by word family (e.g. root or part of speech) and see if the clustering can find THAT
