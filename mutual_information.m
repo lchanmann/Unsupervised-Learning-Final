@@ -2,6 +2,8 @@ function mi = mutual_information( Y, C, normalized )
 %MUTUAL_INFORMATION compute mutual information of clustering C comparing to
 % truth class Y
 %
+    Y = normalize_label(Y);
+    C = normalize_label(C);
 
     [P_ij, P_j, P_i] = probabilities(Y, C);
     [n, m] = size(P_ij);
@@ -14,6 +16,17 @@ function mi = mutual_information( Y, C, normalized )
     % normalized mutual information
     if (nargin == 3) && strcmpi(normalized, 'normalized')
         mi = mi / sqrt(entropy(P_i) * entropy(P_j));
+    end
+end
+
+function Z = normalize_label( Y )
+% normalize the label to start from 1
+%
+
+    Z = zeros(1, length(Y));
+    K = unique(Y);
+    for i=1:length(K)
+        Z(Y==K(i)) = i;
     end
 end
 
