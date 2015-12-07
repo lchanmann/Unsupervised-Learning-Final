@@ -8,6 +8,7 @@ function [ I, D ] = k_means( X, m )
 
     [~, l] = size(X);
     Theta = rand(l, m);
+%     load('Theta.mat');
     D = [];
     t = 1;
 

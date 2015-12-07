@@ -73,6 +73,7 @@ xlabel('Iteration');
 title(['Fuzzy C-Medoids clustering distortion (NMI = ' num2str(nmi) ')']);
 
 %% Spectral clustering
+%  is more sensitive to epsilon than sigma
 epsilon = 19; % choose according to sparseness=10% from spectral.m
 sigma2 = 5; % try from between 1 -> 196
 
