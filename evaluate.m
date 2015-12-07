@@ -12,9 +12,9 @@ function [a, clabel] = evaluate( clustering, desired )
 %              desired (first column) and clustering (second column)
 %              where u=length(unique(desired))
     
-    assert(any(size(clustering) == 1) %clusering must be a linear vector
-    assert(any(size(desired) == 1)    %clusering must be a linear vector
-    assert(length(clustering) == lenth(desired)) %both vectors must have the same number of elements
+    assert(any(size(clustering) == 1)) %clusering must be a linear vector
+    assert(any(size(desired) == 1))    %clusering must be a linear vector
+    assert(length(clustering) == length(desired)) %both vectors must have the same number of elements
     assert(length(unique(desired)) == length(unique(clustering))) % both vectors must have the same number of values
     
     label = unique(desired);
