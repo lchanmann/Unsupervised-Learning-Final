@@ -15,7 +15,7 @@ function [a, clabel] = evaluate( clustering, desired )
     assert(any(size(clustering) == 1)) %clusering must be a linear vector
     assert(any(size(desired) == 1))    %clusering must be a linear vector
     assert(length(clustering) == length(desired)) %both vectors must have the same number of elements
-    assert(length(unique(desired)) == length(unique(clustering))) % both vectors must have the same number of values
+%     assert(length(unique(desired)) == length(unique(clustering))) % both vectors must have the same number of values
     
     label = unique(desired);
     clust = NaN(size(label));

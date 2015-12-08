@@ -36,7 +36,7 @@ end
 function Theta = medoid_swap( P, Theta, I , J )
     [n, ~] = size(P);
     [~, m] = size(Theta);
-    S = randperm(n, randi([1, 0.8*n]));
+    S = randperm(n, randi([1, round(0.8*n)]));
     N = length(S);
     for i=1:N
         Si = S(i);
