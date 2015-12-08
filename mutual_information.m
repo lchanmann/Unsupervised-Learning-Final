@@ -23,7 +23,7 @@ function Z = normalize_label( Y )
 % normalize the label to start from 1
 %
 
-    Z = zeros(1, length(Y));
+    Z = zeros(length(Y), 1);
     K = unique(Y);
     for i=1:length(K)
         Z(Y==K(i)) = i;
