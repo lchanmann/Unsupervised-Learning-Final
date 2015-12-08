@@ -13,9 +13,9 @@ m = 2;
 % colors = 'brkgm';
 for s=1:5
     % load data
-    load(['dY_' num2str(s) '.mat']);
-%     [d, Y]= generate_d_by_speaker([male(s) female(s)]);
-%     P = squareform(d);
+%     load(['dY_' num2str(s) '.mat']);
+    [d, Y]= generate_d_by_speaker([male(s) female(s)]);
+    P = squareform(d);
     
     fprintf('Speaker pair = [%d, %d]\n', female(s), male(s));
 
@@ -102,7 +102,57 @@ for s=1:5
 %     fprintf('\tNaive count accuracy = %0.5f\n', acc);
 %     
 %     % plot total distortion
-%     plot(distortion, colors(s));
+%     plot(distortion);
 %     xlabel('Iterations');
 %     title(['K-means distortion on Eigenmaps (NMI = ' num2str(nmi) ')']);
 end
+
+%% experiment on single word gender clustering 
+
+% number of clusters
+m = 2;
+
+% load data
+[d, Y]= generate_d_by_word(3);
+P = squareform(d);
+
+% %% k-medoids clustering
+display('K-Medoids clustering:');
+[T, Theta, distortion] = k_medoids(P, m);
+% Sk = reshape(T, w, m);
+
+% normailized mutual information
+nmi = mutual_information(Y, T', 'normalized');
+fprintf('\tNormalized mutual information = %0.5f\n', nmi);
+% naive count accuracy
+acc = evaluate(Y, T');
+fprintf('\tNaive count accuracy = %0.5f\n', acc);
+
+% plot medoids distortion
+figure;
+plot(distortion);
+xlabel('Medoid swaping iterations');
+title(['K-Medoids clustering distortion (NMI = ' num2str(nmi) ')']);
+
+% % %% Spectral clustering
+% %  is more sensitive to epsilon than sigma
+% epsilon = 19; % choose according to sparseness=10% from spectral.m
+% sigma2 = 5; % try from between 1 -> 196
+% 
+% y = spectral(d, epsilon, sigma2, m);
+% % normalization
+% z = zscore(y);
+% % k-means clustering
+% [T, distortion] = k_means(z, m);
+% 
+% % normailized mutual information
+% nmi = mutual_information(Y, T', 'normalized');
+% fprintf('\tNormalized mutual information = %0.5f\n', nmi);
+% % naive count accuracy
+% acc = evaluate(Y, T');
+% fprintf('\tNaive count accuracy = %0.5f\n', acc);
+% 
+% % plot total distortion
+% plot(distortion);
+% xlabel('Iterations');
+% title(['K-means distortion on Eigenmaps (NMI = ' num2str(nmi) ')']);
