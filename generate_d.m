@@ -8,10 +8,8 @@ load('MFCCs');
 
 % generate distance matrix
 N = length(MFCCs);
-% number of dimensions used
-l = 13;
 
-%% generate all words distances
+%% generate all words distances (used 13 dimensions from mfccs)
 
 % DTW window parameter
 w = 50;
@@ -36,33 +34,27 @@ toc
 
 save('d13.mat', 'd');
 
-%% generate words distances by speaker
+%% generate all words distances (used all dimensions from mfccs)
 
-w = 103;
-K = w*(w+1)/2 - w;
+% DTW window parameter
+w = 50;
+
+K = N*(N+1)/2 - N;
 d = zeros(1, K);
+k = 1;
 
-for c=1:10
-    d = 0;
-    k = 1;
-    
-    from = (c-1) * w + 1;
-    to = from + w - 1;
-    
-    mfccs = MFCCs(from:to);
-    tic;
-    fprintf('\nSpeaker %d. Computing pairwise distance...', c);
-    for i=1:w
-        s = mfccs{i}(1:13);
-        for j=i+1:w
-            t = mfccs{j}(1:13);
-            d(k) = dtw_c(s, t, w);
-            k = k + 1;
-            progress(k, K);
-        end
+tic;
+fprintf('Computing pairwise distance...');
+for i=1:N
+    s = MFCCs{i};
+    for j=i+1:N
+        t = MFCCs{j};
+        d(k) = dtw_c(s, t, w);
+        k = k + 1;
+        progress(k, K);
     end
-    fprintf('done!\n');
-    toc
-
-    save(['d_' num2str(c) '.mat'], 'd');
 end
+fprintf('done!\n');
+toc
+
+save('d.mat', 'd');
