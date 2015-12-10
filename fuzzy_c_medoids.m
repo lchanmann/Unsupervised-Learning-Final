@@ -8,7 +8,6 @@ function [ Theta, distortion, I ] = fuzzy_c_medoids( P, Theta, q )
     [~, m] = size(Theta);
     [n, ~] = size(P);
     % the number of data excluding clusters' representatives
-%     N = n - m;
     p = 1/(q-1);
 
     t = 0;
@@ -19,6 +18,8 @@ function [ Theta, distortion, I ] = fuzzy_c_medoids( P, Theta, q )
 %         P_tilde = P(idx, :);
 %         D = P_tilde(:, Theta);
 %         U = 1 ./ ((D.^p) .* (sum(D.^-p, 2)*ones(1, m)));
+%         % medoids update
+%         Theta_t = Theta_t = medoid_update(U, P_tilde, q);
 
         D = P(:, Theta);
         U = exp(-n/m*D) ./ (sum(exp(-n/m*D), 2)*ones(1, m));
@@ -27,7 +28,7 @@ function [ Theta, distortion, I ] = fuzzy_c_medoids( P, Theta, q )
 %         U = D == min(D, [], 2)*ones(1, m);
         
         % medoids update
-        [~, Theta_t] = min((U'.^q * P)');
+        Theta_t = medoid_update(U, P, q);
         
         % total distortion
         t = t + 1;
@@ -42,4 +43,13 @@ function [ Theta, distortion, I ] = fuzzy_c_medoids( P, Theta, q )
     
     % cluster assignment
     [~, I] = min(P(:, Theta), [], 2);
+end
+
+function Theta = medoid_update( U, P, q )
+%MEDOID_UPDATE update medoid to minimize weighted sum distance
+%
+
+    W = U'.^q * P;
+    [~, Theta] = min(W, [], 2);
+    Theta = Theta';
 end
