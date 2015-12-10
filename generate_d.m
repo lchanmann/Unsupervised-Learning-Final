@@ -20,7 +20,7 @@ k = 1;
 
 tic;
 fprintf('Computing pairwise distance...');
-for i=1:N
+for i=1:N-1
     s = MFCCs{i}(1:13);
     for j=i+1:N
         t = MFCCs{j}(1:13);
@@ -45,7 +45,7 @@ k = 1;
 
 tic;
 fprintf('Computing pairwise distance...');
-for i=1:N
+for i=1:N-1
     s = MFCCs{i};
     for j=i+1:N
         t = MFCCs{j};

@@ -1,4 +1,4 @@
-function [y, D, W] = spectral( d, epsilon, sigma_squared, m )
+function [y, D, W] = spectral( d, epsilon, sigma2, m )
 %SPECTRAL Performs spectral clustering using minimum distance (epsilon)
 %   and a Laplacian matrix (using sigma_squared)
 %   to divide the data X into 2 clusters
@@ -15,7 +15,7 @@ G = P < epsilon;
 % fprintf('Sparseness of G = %0.4f\n', sum( (g==0) ) / length(g));
 
 % compute the strength of edge e_ij
-W = G .* exp(-P/sigma_squared);
+W = G .* exp(-P/sigma2);
 
 % since W is symmetric, dimension of sum doesn't matter.
 D = sum(W);

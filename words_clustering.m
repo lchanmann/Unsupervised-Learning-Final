@@ -1,7 +1,11 @@
 startup
 
+display('-------------------');
+display('  Word clustering');
+display('-------------------');
+
 % load data
-load('d13.mat');
+load('d.mat');
 
 % number of unique words
 w = 103;
@@ -17,88 +21,99 @@ for i=1:s
     Y = [Y 1:w];
 end
 
-%% Hierachical clustering
+%% Hierarchical clustering
+display('Hierarchical clustering:');
+
 Z = linkage(d, 'weighted');
-figure;
+figure('Name', 'Hierarchical clustering', 'NumberTitle', 'off');
 dendrogram(Z);
 
 T = cluster(Z, 'maxclust', m);
-Sh = reshape(T, w, s)
+% Sh = reshape(T, w, s);
 
 % compute normailized mutual information
 nmi = mutual_information(Y, T', 'normalized');
-fprintf('Normalized mutual information = %0.5f\n', nmi);
+fprintf('\t\tNormalized mutual information = %0.5f\n', nmi);
 % naive count accuracy
 acc = evaluate(Y, T');
-fprintf('Naive count accuracy = %0.5f\n', acc);
+fprintf('\t\tNaive count accuracy = %0.5f\n', acc);
 
 % Cophenet correlation coefficients
 [cpcc, Pc] = cophenet(Z, d);
-fprintf('Cophenet correlation coefficients = %0.5f\n%', cpcc);
+fprintf('\t\tCophenet correlation coefficients = %0.5f\n%', cpcc);
 
 %% k-medoids clustering
-P = squareform(d);
+display('K-medoids:');
 
+P = squareform(d);
 [T, Theta, distortion] = k_medoids(P, m);
-Sk = reshape(T, w, s)
+% Sk = reshape(T, w, s);
 
 % normailized mutual information
 nmi = mutual_information(Y, T', 'normalized');
-fprintf('Normalized mutual information = %0.5f\n', nmi);
+fprintf('\tNormalized mutual information = %0.5f\n', nmi);
 % naive count accuracy
 acc = evaluate(Y, T');
-fprintf('Naive count accuracy = %0.5f\n', acc);
+fprintf('\tNaive count accuracy = %0.5f\n', acc);
 
 % plot medoids distortion
-figure;
+figure('Name', 'K-medoids clustering', 'NumberTitle' , 'off');
 plot(distortion);
 xlabel('Medoid swaping iterations');
 title(['K-Medoids clustering distortion (NMI = ' num2str(nmi) ')']);
 
 %% fuzzy k-medoids clustering
+display('Fuzzy K-medoids:');
+
 P = squareform(d);
 [N, ~] = size(P);
 
 % initialize  sequences
+% load('I_Theta.mat');
 Theta = randperm(N, m);
-% Theta = [131,71,813,453,58,222,451,29,773,97,262,648,656,148,302,401,322,624,702,791,631,664,159,828,652,774,200,266,700,769,809,770,567,214,726,873,754,514,283,675,406,695,41,808,394,503,840,593,485,839,377,210,517,12,796,571,881,151,697,586,298,676,307,62,411,221,78,146,452,494,577,113,910,156,510,668,187,2,500,8,416,590,256,836,155,659,658,328,27,63,255,147,218,903,722,495,227,498,309,677,847,119,681];
 
 % fuzzyfier
-q = 1.5;
+q = 1.8;
 
 [Theta, distortion, T] = fuzzy_c_medoids(P, Theta, q);
-Sf = reshape(T, w, s)
+Sf = reshape(T, w, s);
 
 % normailized mutual information
 nmi = mutual_information(Y, T', 'normalized');
-fprintf('Normalized mutual information = %0.5f\n', nmi);
+fprintf('\tNormalized mutual information = %0.5f\n', nmi);
 % naive count accuracy
 acc = evaluate(Y, T');
-fprintf('Naive count accuracy = %0.5f\n', acc);
+fprintf('\tNaive count accuracy = %0.5f\n', acc);
 
-figure;
+figure('Name', 'Fuzzy c-medoids clustering', 'NumberTitle' , 'off');
 plot(distortion);
 xlabel('Iteration');
 title(['Fuzzy C-Medoids clustering distortion (NMI = ' num2str(nmi) ')']);
 
 %% Spectral clustering
 %  is more sensitive to epsilon than sigma
-epsilon = 19; % choose according to sparseness=10% from spectral.m
-sigma2 = 5; % try from between 1 -> 196
+display('Spectral clustering:');
+
+epsilon = 38; % choose according to sparseness around 10% from spectral.m
+sigma2 = 24; % try from between 1 -> 196 and pick the one that give the best NMI
+fprintf('\t[epsilon, sigma2] = [%0.4f %0.4f]\n', epsilon, sigma2);
 
 y = spectral(d, epsilon, sigma2, m);
 % normalization
 z = zscore(y);
 % k-means clustering
 [T, distortion] = k_means(z, m);
-Sk = reshape(T, w, s);
+% Sk = reshape(T, w, s);
 
 % normailized mutual information
 nmi = mutual_information(Y, T', 'normalized');
-fprintf('Normalized mutual information = %0.5f\n', nmi);
+fprintf('\tNormalized mutual information = %0.5f\n', nmi);
+% naive count accuracy
+acc = evaluate(Y, T');
+fprintf('\tNaive count accuracy = %0.5f\n', acc);
 
 % plot total distortion
-figure;
+figure('Name', 'Spectral clustering + K-means', 'NumberTitle' , 'off');
 plot(distortion);
 xlabel('Iterations');
 title(['K-means distortion on Eigenmap (NMI = ' num2str(nmi) ')']);

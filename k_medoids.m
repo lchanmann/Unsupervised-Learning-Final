@@ -9,8 +9,8 @@ function [ I, Theta, J, I1 ] = k_medoids( P, m )
 %
 
     [n, ~] = size(P);
-%     N = n - m;
     % clusters' medoids
+%     load('I_Theta.mat');
     Theta = randperm(n, m);
     t = 0;
 
