@@ -40,9 +40,9 @@ fprintf('Generating distance...');
 tic;
 N = length(mfccs);
 for i=1:N
-    s = mfccs{i}(1:13);
+    s = mfccs{i};
     for j=i+1:N
-        t = mfccs{j}(1:13);
+        t = mfccs{j};
         d(k) = dtw_c(s, t, w);
         k = k + 1;
         progress(k, K);
