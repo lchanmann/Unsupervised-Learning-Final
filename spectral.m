@@ -10,7 +10,7 @@ P = squareform(d.^2);
 
 % construct sparse graph G(V,E)
 G = P < epsilon;
-
+ 
 % g = G(:);
 % fprintf('Sparseness of G = %0.4f\n', sum( (g==0) ) / length(g));
 
@@ -27,12 +27,16 @@ L = D - W;
 % normalized L
 L_tilde = D_05 * L * D_05;
 
+% L = eye(length(D)) - D_05 * W * D_05;
+
 % eigen decomposition
 [Z, a] = eig(L_tilde);
 
 % re-arrange a and Z
-[a, I] = sort( diag(a), 'ascend');
-Z = Z(:, I);
+% [a, I] = sort( diag(a), 'ascend');
+% Z = Z(:, I);
 
-% compute y
-y = D_05 * Z(:, I(end-m+1:end));
+% % compute y
+% y = D_05 * Z(:, I(end-m+1:end));
+
+y = Z(:, 1:m);

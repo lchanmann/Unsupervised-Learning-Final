@@ -5,7 +5,7 @@ display('  Word clustering');
 display('-------------------');
 
 % load data
-load('d.mat');
+load('d13.mat');
 
 % number of unique words
 w = 103;
@@ -94,11 +94,12 @@ title(['Fuzzy C-Medoids clustering distortion (NMI = ' num2str(nmi) ')']);
 %  is more sensitive to epsilon than sigma
 display('Spectral clustering:');
 
-epsilon = 38; % choose according to sparseness around 10% from spectral.m
-sigma2 = 24; % try from between 1 -> 196 and pick the one that give the best NMI
+epsilon = Inf;%8;%.16;%38; % choose according to sparseness around 10% from spectral.m
+sigma2 = 24;%24;%2;%24; % try from between 1 -> 196 and pick the one that give the best NMI
 fprintf('\t[epsilon, sigma2] = [%0.4f %0.4f]\n', epsilon, sigma2);
 
-y = spectral(d, epsilon, sigma2, m);
+s = 1./d;
+y = spectral(s, epsilon, sigma2, m);
 % normalization
 z = zscore(y);
 % k-means clustering
