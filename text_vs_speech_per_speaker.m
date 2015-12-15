@@ -14,6 +14,9 @@ for i=1:w
 end
 delete(h);
 Text_Z= linkage(text_d, 'weighted');
+figure
+dendrogram(Text_Z)
+title('Clustering for text transcriptions')
 
 %%
 all = false;
@@ -29,6 +32,9 @@ for i=1:s
 
     a  = zeros(w,1);
     mi = zeros(w,1);
+figure
+dendrogram(Speech_Z)
+title(sprintf('Clustering for Speaker %d''s speech',i))
     for m = 1:w
         speech_clustering = cluster(Speech_Z, 'maxclust', m);
         text_clustering   = cluster(Text_Z, 'maxclust', m);

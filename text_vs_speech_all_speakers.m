@@ -19,6 +19,10 @@ text_d = squareform(repmat(squareform(text_d,'tomatrix'),10),'tovector');
 Text_Z = linkage(text_d, 'weighted');
 delete(h);
 
+figure
+dendrogram(Text_Z,w)
+title('Clustering for text transcriptions')
+
 word_accuracy = evaluate(cluster(Text_Z,'maxclust',103), repmat([1:w]',s,1))
 
 %%
@@ -35,6 +39,10 @@ for m = 1:w
     a(m) = evaluate(speech_clustering,text_clustering);
     mi(m) = mutual_information(speech_clustering,text_clustering,'normalized');
 end
+
+figure
+dendrogram(Speech_Z,w)
+title(sprintf('Clustering all speakers',i))
 
 figure
 plot(a)
